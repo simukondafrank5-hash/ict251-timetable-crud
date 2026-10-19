@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Timetable &amp; Goals</title>
+  <style>
+    :root {
+      --bg: #f2f4f7;
+      --surface: #ffffff;
+      --ink: #14213d;
+      --muted: #5c677d;
+      --line: #d9dee6;
+      --accent: #1b6ca8;
+      --accent-ink: #ffffff;
+      --danger: #b3261e;
+      --ok: #1e7b4f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101722;
+        --surface: #182233;
+        --ink: #e8edf5;
+        --muted: #9aa7bd;
+        --line: #2b384d;
+        --accent: #5aa9e6;
+        --accent-ink: #0b1420;
+        --danger: #ff8a80;
+        --ok: #6fcf97;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.5 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+    }
+    header, main { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+    header { padding-top: 28px; }
+    h1 { margin: 0; font-size: 1.7rem; }
+    header p { margin: 4px 0 20px; color: var(--muted); }
+    section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    h2 { margin: 0 0 14px; font-size: 1.15rem; }
+    form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 16px; }
+    label { display: flex; flex-direction: column; gap: 4px; font-size: .9rem; color: var(--muted); }
+    input, select {
+      font: inherit;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    input:focus-visible, select:focus-visible, button:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 1px;
+    }
+    .wide { grid-column: 1 / -1; }
+    .actions { grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      font: inherit;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+    button.danger { color: var(--danger); border-color: var(--danger); }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: .85rem; color: var(--muted); font-weight: 600; }
+    .row-actions { display: flex; gap: 6px; }
+    .row-actions button { padding: 4px 10px; font-size: .9rem; }
+    .empty { color: var(--muted); padding: 16px 0 4px; }
+    #status { min-height: 1.5em; margin-top: 10px; font-size: .95rem; }
+    #status.ok { color: var(--ok); }
+    #status.error { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Student Timetable &amp; Goals</h1>
+    <p>Add your classes, set a study goal for each, and keep them up to date.</p>
+  </header>
+
+  <main>
+    <section aria-labelledby="form-title">
+      <h2 id="form-title">Add a class</h2>
+      <form id="timetable-form">
+        <input type="hidden" id="record-id" />
+        <label>Course code *
+          <input id="course_code" required maxlength="20" placeholder="ICT251" />
+        </label>
+        <label>Course name
+          <input id="course_name" maxlength="150" placeholder="Web Technologies" />
+        </label>
+        <label>Day
+          <select id="day_of_week">
+            <option value="">Choose a day</option>
+            <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+            <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+          </select>
+        </label>
+        <label>Start time
+          <input id="start_time" type="time" />
+        </label>
+        <label>End time
+          <input id="end_time" type="time" />
+        </label>
+        <label>Venue
+          <input id="venue" maxlength="100" placeholder="Lab 1" />
+        </label>
+        <label>Lecturer
+          <input id="lecturer" maxlength="100" placeholder="Mr. Phiri" />
+        </label>
+        <label class="wide">Study goal
+          <input id="study_goal" maxlength="250" placeholder="Finish the Node.js CRUD assignment" />
+        </label>
+        <div class="actions">
+          <button type="submit" class="primary" id="save-btn">Save class</button>
+          <button type="button" id="cancel-btn" hidden>Cancel edit</button>
+        </div>
+      </form>
+      <div id="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section aria-labelledby="list-title">
+      <h2 id="list-title">Your timetable</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Course</th><th>Day</th><th>Time</th>
+              <th>Venue</th><th>Lecturer</th><th>Study goal</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p id="empty" class="empty" hidden>No classes yet. Add one with the form above.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

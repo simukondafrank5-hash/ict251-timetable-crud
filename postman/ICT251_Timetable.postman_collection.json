@@ -1,0 +1,150 @@
+{
+  "info": {
+    "name": "ICT251 Timetable CRUD",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. GET all",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/timetable",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "timetable"
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. GET one",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/timetable/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "timetable",
+            "{{id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. POST create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/timetable",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "timetable"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"course_code\": \"CSC301\",\n  \"course_name\": \"Software Engineering\",\n  \"day_of_week\": \"Monday\",\n  \"start_time\": \"09:00\",\n  \"end_time\": \"11:00\",\n  \"venue\": \"Lab 2\",\n  \"lecturer\": \"Dr. Banda\",\n  \"study_goal\": \"Read chapter 3\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('id', pm.response.json().id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. PUT update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/timetable/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "timetable",
+            "{{id}}"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"course_code\": \"CSC301\",\n  \"course_name\": \"Software Engineering (updated)\",\n  \"day_of_week\": \"Monday\",\n  \"start_time\": \"09:00\",\n  \"end_time\": \"11:00\",\n  \"venue\": \"Lab 2\",\n  \"lecturer\": \"Dr. Banda\",\n  \"study_goal\": \"Finish chapter 3 notes\"\n}"
+        }
+      }
+    },
+    {
+      "name": "5. DELETE",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/timetable/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "timetable",
+            "{{id}}"
+          ]
+        }
+      }
+    }
+  ]
+}
